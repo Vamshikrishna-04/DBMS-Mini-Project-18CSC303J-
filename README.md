@@ -13,7 +13,8 @@ The main purpose of maintaining database for Railway Reservation System is to re
 This project is about creating the database about Railway Reservation System.The railway reservation system facilitates the passengers to enquire about the trains available on the basis of source and destination, booking and cancellation of tickets, enquire about the status of the booked ticket, etc. The aim of case study is to design and develop a database maintaining the records of different trains, train status, and passengers. The record of train includes its number, name, source, destination, and days on which it is available, whereas record of train status includes dates for which tickets can be booked, total number of seats available, and number of seats already booked.
 
 # Entity Relationship Diagram
-![Uploading 1.png…]()
+![1](https://user-images.githubusercontent.com/79651461/162892159-a4c4b332-5c3f-47b2-895a-7adf3bdd4106.png)
+
 
 # Conclusion
 
