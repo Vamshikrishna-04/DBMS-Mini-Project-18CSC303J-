@@ -1,0 +1,137 @@
+CREATE COMMANDS:
+CREATE TABLE IF NOT EXISTS USER (user_id INT PRIMARY KEY,first_name VARCHAR(50),last_name 
+VARCHAR(50),adhar_no VARCHAR(20),gender CHAR (1),age INT,mobile_no VARCHAR(50),email VARCHAR(50),city 
+VARCHAR(50),state VARCHAR(50),pincode VARCHAR(20),_password VARCHAR(50),security_ques 
+VARCHAR(50),security_ans VARCHAR(50));
+
+CREATE TABLE IF NOT EXISTS TRAIN(train_no INT PRIMARY KEY,train_name VARCHAR(50),arrival_time 
+TIME,departure_time TIME,availability_of_seats CHAR,datee DATE);
+
+
+CREATE TABLE IF NOT EXISTS STATION(station_no INT, namee VARCHAR(50),hault INT,arrival_time TIME,train_no INT,PRIMARY KEY(station_no,train_no), CONSTRAINT FOREIGN KEY(train_no) REFERENCES 
+TRAIN(train_no));
+
+CREATE TABLE IF NOT EXISTS TRAlN_STATUS(train_no INT PRIMARY KEY,b_seats1 INT,b_seats2 
+INT,a_seats1 INT,a_seats2 INT,w_seats1 INT,w_seats2 INT,fare1 FLOAT,fare2 FLOAT);
+
+CREATE TABLE IF NOT EXISTS TICKET(id INT PRIMARY KEY,user_id INT,statuss CHAR,no_of_passengers 
+INT ,train_no INT,CONSTRAINT FOREIGN KEY(user_id) REFERENCES USER (user_id),CONSTRAINT FOREIGN 
+KEY(train_no) REFERENCES TRAIN(train_no));
+
+CREATE TABLE IF NOT EXISTS PASSENGER(passenger_id INT PRIMARY KEY,pnr_no INT,age INT,gender 
+CHAR,user_id INT,reservation_status CHAR,seat_number VARCHAR(5),namee VARCHAR(50),ticket_id 
+INT,CONSTRAINT (fk_userid) FOREIGN KEY(user_id) REFERENCES USER user_id,CONSTRAINT FOREIGN KEY(ticket_id) 
+REFERENCES TICKET(id));
+
+
+
+
+CREATE TABLE IF NOT EXISTS START( train_no INT PRIMARY KEY,station_no INT,CONSTRAINT FOREIGN 
+KEY(train_no) REFERENCES TRAIN(train_no),CONSTRAINT FOREIGN KEY(station_no) REFERENCES 
+STATION(station_no));
+
+CREATE TABLE IF NOT EXISTS STOPS_AT( train_no INT,station_no INT,CONSTRAINT FOREIGN KEY(train_no) 
+REFERENCES TRAIN(train_no),CONSTRAINT FOREIGN KEY(station_no) REFERENCES STATION(station_no));
+
+CREATE TABLE IF NOT EXISTS REACHES(train_no INT,station_no INT,timee TIME,CONSTRAINT FOREIGN 
+KEY(train_no) REFERENCES TRAIN(train_no),CONSTRAINT FOREIGN KEY(station_no) REFERENCES 
+STATION(station_no));
+
+CREATE TABLE IF NOT EXISTS BOOKS( user_id INT,id INT,CONSTRAINT FOREIGN KEY(user_id) REFERENCES 
+USER (user_id),CONSTRAINT FOREIGN KEY(id) REFERENCES TICKET(id));
+
+CREATE TABLE IF NOT EXISTS CANCEL(user_id INT,id INT,passenger_id INT,CONSTRAINT FOREIGN KEY(id) 
+REFERENCES TICKET(id),CONSTRAINT FOREIGN KEY(passenger_id) REFERENCES PASSENGER(passenger_id),CONSTRAINT FOREIGN KEY(user_id) REFERENCES USER (user_id));
+
+
+INSERT INTO
+USER VALUES (1701,'Dinesh','Reddy','309887340843','M',34,'9887786655','vijayl@gmail.com','vijayawada','andhrapradesh','520001','12345@#','favouritecolour','red');
+
+INSERT INTO
+USER VALUES (1702,'Vamshi','Krishna','456709871234','M',45,'9809666555','rohith1kumar@gmail.com','guntur','andhrapradesh','522004','12@#345','favouritebike','bmw');
+
+INSERT INTO
+USER VALUES (1703,'Spurgeon','Nani','765S43210987','F',20,'999555Ofifi6','mananasvi57@gmail.com','guntur','andhra pradesh','522004','O987hii','favouritef1ower','rose');
+
+INSERT INTO TRAIN VALUES (12711,'pinakini exp','113000','114000','A',20170410);
+
+INSERT INTO TRAIN VALUES (12315,'corimandel exp','124500','125000', 'N' ,20170410 );
+
+INSERT INTO STATION (station_no,namee,hault,arrival_time,train_no) VALUES (111,'vijayawada',10,'11:30:00',12711);
+
+INSERT INTO station  VALUES (222,'tirupathi',5,'1l:45:00',12315);
+
+INSERT INTO  PASSENGER (passenger_id,pnr_no,age,gender,user_id,reservation_status,
+seat_number,NAME,ticket_id) VALUES ( 50O1,78965,45,'M',1701,'C' ,'B6- 
+45','rainesh',4001),(5OO2,54523,54,'F',1701,'W','B3-21','surekha',40O2);
+
+INSERT INTO STARTS(train NO,station NO) VALUES(l2315,222);
+
+INSERT INTO STOPS_AT(train NO,station NO) VALUES(12711,222),(12315,111);
+
+DESC START;
+
+SELECT * FROM START;
+COMMIT;
+
+
+SELECT * FROM TRAIN;
+
+SELECT * FROM STATION;
+
+INSERT INTO REACHES(train NO,station NO,TIMEe) VALUES(12711,222,'12O000'), (12315,111,'O53500');
+
+INSERT INTO BOOKS(user_id,id) VALUES(1701,77),(1702,4002);
+
+INSERT INTO CANCEL(USER id,id,passenger id) VALUES(17O1,4001,5OO1);
+
+
+
+1)SELECT u.user_id,CONCAT(u.first_name,u.last_name) AS NAME
+FROM USER u,train t,ticket tc
+WHERE u.user_id=tc.user_id AND t.train_no=tc.train_no AND t.train_name LIKE 'corimandel exp';
+
+
+2)SELECT * FROM passenger WHERE ticket_id = 77;
+
+
+3)SELECT t.*
+FROM train t,station s,reaches r
+WHERE t.train_no=r.train_no AND r.station_no=s.station_no AND s.namee LIKE 'vijayawada';
+
+
+4)SELECT r.*,s.namee
+FROM reaches r,station s WHERE r.station_no=s.station_no;
+
+
+5)SELECT u.* FROM USER u,ticket t,cancel c
+WHERE c.user_id=u.user_id AND c.id=t.id AND t.train_no LIKE 12315;
+
+
+6)SELECT 
+ts.train_no,ts.fare1,t.train_name
+FROM train_status ts,train t WHERE t.train_no=ts.train_no ORDER BY fare1 ASC;
+
+
+7)SELECT 
+ts.train_no,ts.fare1,t.train_name
+FROM train_status ts,train t WHERE t.train_no=ts.train_no ORDER BY fare1 DESC;
+
+
+8)SELECT p.*
+FROM passenger p,train t,ticket tc
+WHERE tc.train_no=t.train_no AND tc.id=p.ticket_id AND t.train_name LIKE 'corimandel exp';
+
+
+9)SELECT DISTINCT t.*
+FROM train t,station s,STARTS st,stops_at sa
+WHERE st.station_no=(SELECT station_no FROM station WHERE namee LIKE 'tirupati')
+AND sa.station_no=(SELECT station_no FROM station WHERE namee LIKE 'vijayawada') ORDER BY datee;
+
+
+10)SELECT train_no FROM station HAVING MAX(hault);
+
+
+11)SELECT t.*
+FROM ticket t
+WHERE t.statuss LIKE 'c' AND t.train_no=12315;
